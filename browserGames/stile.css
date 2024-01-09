@@ -1,0 +1,30 @@
+body {
+    background-color: aqua;
+    text-align: center;
+}
+
+.selectionImage{
+    width:140; 
+    height: 100;
+}
+#gameBox{
+    margin-top: 50px;
+    background-color: gray;
+    width: 20%;
+    height: auto;
+    border-radius: 10%;
+    border: 5px solid rgb(39, 39, 39);
+    float: left;
+    margin-left: 10%;
+    padding-bottom: 10px;
+}
+#gameBox :hover{
+    background-blend-mode: color;
+}
+.title{
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    color: rgb(255, 215, 35);
+    text-shadow: 0px 10px 20px  rgb(0, 0, 0) ; 
+    font-size: xxx-large;
+    text-align: center;
+}

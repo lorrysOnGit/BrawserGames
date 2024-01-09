@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        
+        <title>Flappy Bird</title>
+        <link rel="stylesheet" href="flappyBird.css">
+        <script type="text/javascript"src="flappyBird.js"></script>
+    </head>
+    <body>
+        <div id="position">
+            <div class="schermataGameOver" id="GameOver">
+                <div id="yourScore">
+                    <p class="score">your score: <p class="score" id="score">0</p></p>
+                </div>
+                <div id="topScore">
+                    <p class="score">personal best: <p class="score" id="bestScore">0</p></p>
+                </div>
+                <input type="button" id="retry" value="retry" class="retry" onclick="retry()">
+                <input type="button" id="retunHome" value="home" class="returnHome" onclick="returnHome()">
+                <div id="flappyBird"> 
+                    <p class="score">select difficulty:</p>  
+                    <input type="button" value="easy" id="easy" onclick="difficulty(1)"></a>
+                    <input type="button" value="medium" id="medium" onclick="difficulty(2)"></a>
+                    <input type="button" value="hard" id="hard" onclick="difficulty(3)"></a>
+                </div>
+            </div>
+            <canvas id="board"></canvas>
+        </div>
+        
+    </body>
+</html>

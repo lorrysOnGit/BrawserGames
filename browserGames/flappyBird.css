@@ -1,0 +1,98 @@
+body {
+    background-color: aqua;
+}
+
+#board {
+    /* background-color: skyblue; */
+    background-image: url("./media/immagini/flappybirdbg.png");
+}
+.schermataGameOver{
+    background-color:rgb(71, 71, 71);
+    border: rgb(255, 0, 0) 2px; 
+    width: 360px;
+    height: 360px;
+    border-radius: 2%;
+    margin-top: 100px;
+    display: none;
+  }
+#GameOver{  
+    position: absolute;
+}
+  
+#retry{
+  text-align: center;    
+  color: rgb(255, 255, 255);
+  background-color: red;
+  cursor: pointer;
+  border-radius: 2% ;
+  text-decoration-color: white;
+  text-shadow: 0px 10px 20px  rgb(0, 0, 0) ;
+}
+#position{
+    position: absolute;
+    right: 40.15%;
+}
+.retry{
+    margin-left: 50px;
+    width: 75px;
+    height: 35px;
+    font-size: x-large;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    margin-top: 140px;
+}
+#returnHome{
+    text-align: center;    
+    color: rgb(255, 255, 255);
+    background-color: red;
+    cursor: pointer;
+    border-radius: 2% ;
+    text-decoration-color: white;
+    text-shadow: 0px 10px 20px  rgb(0, 0, 0) ;
+  }
+.returnHome{
+    margin-right: 50px;
+    float: right;
+    width: 75px;
+    height: 35px;
+    font-size: x-large;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    margin-top: 140px;
+}
+.score{
+    font-size: x-large;
+    color: white;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+
+}
+#yourScore{
+    float: left;
+    width: 160px;
+    margin-left: 20px;
+    height: 0px;
+}
+#topScore{
+    float: right;
+    width: 160px;
+    margin-right: 10px;
+    padding-left: 10px;
+    height: 0px;
+}
+#easy{
+    background-color: green;
+    cursor: pointer;
+    margin: 10px;
+}
+#medium{
+    background-color: rgb(255, 82, 2);
+    cursor: pointer;
+    margin: 10px;
+}
+#hard{
+    background-color: rgb(255, 0, 0);
+    cursor: pointer;
+    margin: 10px;
+}
+#difficulties{
+    text-align: center;
+    margin-left: 30;
+}
