@@ -66,7 +66,7 @@ window.onload = function() {
     context.fillStyle = "green";
     context.fillRect(player.x, player.y, player.width, player.height);
     requestAnimationFrame(update);
-    setTimeout(enemy1,10000);
+    setTimeout(enemy1,10000); //wait time for the first elephant to spawn
     setInterval(enemy1canDealDamage,1000);
     document.addEventListener("keydown", movePlayer);
     document.addEventListener("keyup", jump);
@@ -114,148 +114,8 @@ function update() {
     context.fillStyle = "green";
     context.fillRect(player.x, player.y, player.width, player.height);
 
-
-    
-
-    //enemy interaction and behavior
-    if(enemy1Spawn==true){
-        for(let i=0; i<enemy1Array.length;i++){
-            let enemy = enemy1Array[i];
-            if(detectCollision(hut,enemy)){
-                enemy.speed=0;
-                if(elephantCanDealDamage==true){
-                    dealDamage(enemy);
-                    elephantCanDealDamage=false;
-                }
-            }
-            if(detectCollision(player,enemy)){
-                playerCollision(enemy); 
-            }
-            if(enemy.vitality>=0){
-              enemy.x += enemy.speed;
-            context.fillStyle="red";
-            context.fillRect(enemy.x,enemy.y, enemy.width, enemy.height);   
-            }
-            else{
-                enemy1Spawn=false;
-                context.clearRect(enemy.x,enemy.y,enemy.width,enemy.height);
-                enemy1Array.shift();
-                setTimeout(enemy1,10000);
-            }
-           
-        }
-    }
-
-
-    if(upProjectiles==true){
-        //upProjectile movement & physics
-        for(let i=0; i<upProjectileArray.length;i++){
-            let projectile = upProjectileArray[i];
-            projectile.y -= projectileSpeed;
-            context.fillStyle="red";
-            context.fillRect(projectile.x,projectile.y, projectile.width, projectile.height);
-            //collision with enemy1
-            if(enemy1Spawn==true){
-                for(let i=0; i<enemy1Array.length;i++){
-                    let enemy = enemy1Array[i];
-                    if(detectCollision(enemy,projectile)){
-                        context.clearRect(projectile.x,projectile.y, projectile.width, projectile.height);
-                        upProjectileArray.shift();
-                        enemy.vitality -=projectileDamamge;
-                    }    
-                }
-            }
-        }
-        //clear upProjectiles
-        while (upProjectileArray.length > 0 && upProjectileArray[0].y < 0) {
-            upProjectileArray.shift(); //removes the first element of the array
-        }
-        if(upProjectileArray[0]==null){
-            upProjectiles=false;
-        }
-    }
-    if(downProjectiles==true){
-        //downProjectile movement & physics
-        for(let i=0; i<downProjectileArray.length;i++){
-            let projectile = downProjectileArray[i];
-            projectile.y += projectileSpeed;
-            context.fillStyle="red";
-            context.fillRect(projectile.x,projectile.y, projectile.width, projectile.height);
-            //collision with enemy1
-            if(enemy1Spawn==true){
-                for(let i=0; i<enemy1Array.length;i++){
-                    let enemy = enemy1Array[i];
-                    if(detectCollision(enemy,projectile)){
-                        context.clearRect(projectile.x,projectile.y, projectile.width, projectile.height);
-                        downProjectileArray.shift();
-                        enemy.vitality -=projectileDamamge;
-                    }    
-                }
-            }
-        }
-        //clear downProjectiles
-        while (downProjectileArray.length > 0 && downProjectileArray[0].y > boardHeight) {
-            downProjectileArray.shift(); //removes the first element of the array
-        }
-        if(downProjectileArray[0]==null){
-            downProjectiles=false;
-        }
-    }
-    if(leftProjectiles==true){
-        //leftProjectile movement & physics
-        for(let i=0; i<leftProjectileArray.length;i++){
-            let projectile = leftProjectileArray[i];
-            projectile.x -= projectileSpeed;
-            context.fillStyle="red";
-            context.fillRect(projectile.x,projectile.y, projectile.width, projectile.height);
-            //collision with enemy1
-            if(enemy1Spawn==true){
-                for(let i=0; i<enemy1Array.length;i++){
-                    let enemy = enemy1Array[i];
-                    if(detectCollision(enemy,projectile)){
-                        context.clearRect(projectile.x,projectile.y, projectile.width, projectile.height);
-                        leftProjectileArray.shift();
-                        enemy.vitality -=projectileDamamge;
-                    }    
-                }
-            }
-        }
-        //clear leftProjectiles
-        while (leftProjectileArray.length > 0 && leftProjectileArray[0].x < 0) {
-            leftProjectileArray.shift(); //removes the first element of the array
-        }
-        if(leftProjectileArray[0]==null){
-            leftProjectiles=false;
-        }
-    }
-    if(rightProjectiles==true){
-        //rightProjectile movement & physics
-        for(let i=0; i<rightProjectileArray.length;i++){
-            let projectile = rightProjectileArray[i];
-            projectile.x += projectileSpeed;
-            context.fillStyle="red";
-            context.fillRect(projectile.x,projectile.y, projectile.width, projectile.height);
-            //collision with enemy1
-            if(enemy1Spawn==true){
-                for(let i=0; i<enemy1Array.length;i++){
-                    let enemy = enemy1Array[i];
-                    if(detectCollision(enemy,projectile)){
-                        rightProjectileArray.shift();
-                        context.clearRect(projectile.x,projectile.y, projectile.width, projectile.height);
-                        enemy.vitality -=projectileDamamge;
-
-                    }    
-                }
-            }
-        }
-        //clear rightProjectiles
-        while (rightProjectileArray.length > 0 && rightProjectileArray[0].x > boardWidth) {
-            rightProjectileArray.shift(); //removes the first element of the array
-        }
-        if(rightProjectileArray[0]==null){
-            rightProjectiles=false;
-        }
-    }
+    //enemy interaction and behavior + bullets functions
+    enemyBehavior();
     if(player.vitality<=0){
         gameOver=true;
     }
@@ -265,6 +125,7 @@ function update() {
         player.y=platerY;
         player.x=playerX;
         enemy1Array = [];
+        enemy2Array = [];
         enemy1Spawn=false;
         gameOver=false;
         hut.vitality=100;
@@ -273,7 +134,6 @@ function update() {
         return;
         
     }
-
     
 }
 function movePlayer(e){
@@ -419,5 +279,173 @@ function playerCollision(enemy){
     if(player.y+player.height>enemy.y+20){
         player.vitality -= enemy.damage;
         console.log("hai preso danno");
+    }
+}
+function enemyBehavior(){
+    //elephant behavior
+        if(enemy1Spawn==true){
+            for(let i=0; i<enemy1Array.length;i++){
+                let enemy = enemy1Array[i];
+                if(detectCollision(hut,enemy)){
+                    enemy.speed=0;
+                    if(elephantCanDealDamage==true){
+                        dealDamage(enemy);
+                        elephantCanDealDamage=false;
+                    }
+                }
+                if(detectCollision(player,enemy)){
+                    playerCollision(enemy); 
+                }
+                bulletsOnEnemy(enemy);
+                if(enemy.vitality>0){
+                  enemy.x += enemy.speed;
+                context.fillStyle="red";
+                context.fillRect(enemy.x,enemy.y, enemy.width, enemy.height);   
+                }
+                else{
+                    enemy1Spawn=false;
+                    context.clearRect(enemy.x,enemy.y,enemy.width,enemy.height);
+                    enemy1Array.shift();
+                    setTimeout(enemy1,10000);
+                }
+            }
+        }
+        else{
+            let enemy = {
+                x: 0,
+                y: 0,
+                width : 0,
+                height : 0,
+                vitality : 0
+            }
+            bulletsOnEnemy(enemy);
+        }
+    }
+function bulletCollision(enemy,projectile,dir){
+      
+    if(detectCollision(enemy,projectile)){
+        switch (dir){
+            case 1:
+                upProjectileArray.shift();
+                break;
+            case 2:
+                downProjectileArray.shift();
+                break;
+            case 3:
+                leftProjectileArray.shift();
+                break; 
+            case 4:
+                rightProjectileArray.shift();
+                break;
+        }
+        context.clearRect(projectile.x,projectile.y, projectile.width, projectile.height);
+        enemy.vitality -=projectileDamamge;
+    } 
+    
+}
+function bulletsOnEnemy(enemy){
+    for(let i=0; i<4; i++){
+        switch (i){
+            case 0:
+                bulletBehavior(1,enemy);
+                break;
+            case 1:
+                bulletBehavior(2,enemy);
+                break;
+            case 2:
+                bulletBehavior(3,enemy);
+                break;
+            case 3:
+                bulletBehavior(4,enemy);
+                break;
+        }
+
+    }
+}
+function bulletBehavior(dir,enemy){
+    
+    switch (dir){
+        case 1:
+            for(let i=0; i<upProjectileArray.length;i++){
+                let projectile = upProjectileArray[i];
+                bulletPhysics(projectile,dir);
+                bulletCollision(enemy,projectile,dir);
+                //clear upProjectiles
+                while (upProjectileArray.length > 0 && upProjectileArray[0].y < 0) {
+                    upProjectileArray.shift(); //removes the first element of the array
+                }
+                if(upProjectileArray[0]==null){
+                    upProjectiles=false;
+                }
+            }
+            break;
+        case 2:
+            for(let i=0; i<downProjectileArray.length;i++){
+                let projectile = downProjectileArray[i];
+                bulletPhysics(projectile,dir);
+                bulletCollision(enemy,projectile,dir);
+                //clear downProjectiles
+                while (downProjectileArray.length > 0 && downProjectileArray[0].y > boardHeight) {
+                    downProjectileArray.shift(); //removes the first element of the array
+                }
+                if(downProjectileArray[0]==null){
+                    downProjectiles=false;
+                }
+            }
+            break;
+        case 3:
+            //leftProjectile movement & physics
+            for(let i=0; i<leftProjectileArray.length;i++){
+                let projectile = leftProjectileArray[i];
+                bulletPhysics(projectile,dir);
+                bulletCollision(enemy,projectile,dir);
+                //clear leftProjectiles
+                while (leftProjectileArray.length > 0 && leftProjectileArray[0].x < 0) {
+                    leftProjectileArray.shift(); //removes the first element of the array
+                }
+                if(leftProjectileArray[0]==null){
+                    leftProjectiles=false;
+                }
+            }
+            break; 
+        case 4 :
+            for(let i=0; i<rightProjectileArray.length;i++){
+                let projectile = rightProjectileArray[i];
+                bulletPhysics(projectile,dir);
+                bulletCollision(enemy,projectile,dir);
+                //clear rightProjectiles
+                while (rightProjectileArray.length > 0 && rightProjectileArray[0].x > boardWidth) {
+                    rightProjectileArray.shift(); //removes the first element of the array
+                }
+                if(rightProjectileArray[0]==null){
+                    rightProjectiles=false;
+                }
+            }
+            break;
+    }
+
+}
+function bulletPhysics(projectile,dir){
+    switch (dir){
+        case 1:
+            projectile.y -= projectileSpeed;
+            context.fillStyle="red";
+            context.fillRect(projectile.x,projectile.y, projectile.width, projectile.height);
+            break;
+        case 2:
+            projectile.y += projectileSpeed;
+            context.fillStyle="red";
+            context.fillRect(projectile.x,projectile.y, projectile.width, projectile.height);
+            break;
+        case 3:
+            projectile.x -= projectileSpeed;
+            context.fillStyle="red";
+            context.fillRect(projectile.x,projectile.y, projectile.width, projectile.height);
+            break; 
+        case 4:
+            projectile.x += projectileSpeed;
+            context.fillStyle="red";
+            context.fillRect(projectile.x,projectile.y, projectile.width, projectile.height);
+            break;
     }
 }
