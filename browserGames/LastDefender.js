@@ -166,12 +166,14 @@ function jump(e){
         }
     }
     if(e.key == "a"){
+        friction=1;
         if(player.y<600&&velocityX>-13){
             velocityX = -13;
             friction=1;
         }
     }
     if(e.key == "d"){
+        friction=1;
         if(player.y<600&&velocityX<13){
             velocityX = 13;
             friction=1;
@@ -297,17 +299,7 @@ function enemyBehavior(){
                     playerCollision(enemy); 
                 }
                 bulletsOnEnemy(enemy);
-                if(enemy.vitality>0){
-                  enemy.x += enemy.speed;
-                context.fillStyle="red";
-                context.fillRect(enemy.x,enemy.y, enemy.width, enemy.height);   
-                }
-                else{
-                    enemy1Spawn=false;
-                    context.clearRect(enemy.x,enemy.y,enemy.width,enemy.height);
-                    enemy1Array.shift();
-                    setTimeout(enemy1,10000);
-                }
+                deadOrAlive(1,enemy);
             }
         }
         else{
@@ -321,6 +313,26 @@ function enemyBehavior(){
             bulletsOnEnemy(enemy);
         }
     }
+function deadOrAlive(type,enemy){
+    if(enemy.vitality>0){
+        enemy.x += enemy.speed;
+        context.fillStyle="red";
+        context.fillRect(enemy.x,enemy.y, enemy.width, enemy.height);   
+        }
+    else{
+        context.clearRect(enemy.x,enemy.y,enemy.width,enemy.height);
+        enemy1Array.shift();
+        setTimeout(enemy1,10000);
+        switch (type) {
+            case 1:
+                enemy1Spawn=false;
+                break;
+        
+            default:
+                break;
+        }
+    }
+}
 function bulletCollision(enemy,projectile,dir){
       
     if(detectCollision(enemy,projectile)){
