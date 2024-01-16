@@ -9,6 +9,7 @@ let playerHeight=75;
 let playerX=boardWidth/2;
 let platerY=0;
 let playerImg;
+let chargeDash=0;
 
 let player = {
     x : playerX,
@@ -98,6 +99,7 @@ function update() {
             }
     }
     if (player.y==600){
+        chargeDash=0;
         if(velocityX<0){
         velocityX += friction;
         }
@@ -144,12 +146,16 @@ function movePlayer(e){
         }
     }
     if (e.key == "a"){
-        velocityX = -7;
-        friction=0;
+        if(player.y==600){
+            friction=0;
+            velocityX = -7;
+        }
     }
     if (e.key == "d"){
-        velocityX = 7;
-        friction=0; 
+        if(player.y==600){
+            velocityX = 7;
+            friction=0; 
+        }
     }
     if (e.key == "s"){
         friction=0.4;
@@ -168,15 +174,21 @@ function jump(e){
     if(e.key == "a"){
         friction=1;
         if(player.y<600&&velocityX>-13){
-            velocityX = -13;
-            friction=1;
+            chargeDash++;
+            if(chargeDash==2){
+                velocityX = -13;
+                friction=1;
+            }
         }
     }
     if(e.key == "d"){
         friction=1;
         if(player.y<600&&velocityX<13){
+            chargeDash++;
+           if(chargeDash==2){
             velocityX = 13;
             friction=1;
+           }
         }
     }
 }
