@@ -77,14 +77,42 @@ function update() {
     requestAnimationFrame(update);
     context.clearRect(0, 0, board.width, board.height);
     //hut
+    hutAnimations();
+
+    //player movement & physics
+    playerPhysics();   
+
+    //enemy interaction and behavior + bullets functions
+    enemyBehavior();
+
+    if(player.vitality<=0){
+        gameOver=true;
+    }
+    if(gameOver){
+        console.log("game over");
+        alert("game Over")
+        player.y=platerY;
+        player.x=playerX;
+        enemy1Array = [];
+        enemy2Array = [];
+        enemy1Spawn=false;
+        gameOver=false;
+        hut.vitality=100;
+        player.vitality=100;
+        setTimeout(enemy1,10000);
+        return;
+        
+    }
+    
+}
+function hutAnimations(){
     context.fillStyle = "yellow";
     context.fillRect(hut.x,hut.y,hut.width,hut.height);
-    
     if(hut.vitality<=0){
         gameOver=true;
     }
-
-    //player movement & physics
+}
+function playerPhysics(){
     velocityY += gravity;
     if (stops==true){
         if(velocityX<0){
@@ -115,28 +143,6 @@ function update() {
     player.y = Math.min(player.y + velocityY, 600);
     context.fillStyle = "green";
     context.fillRect(player.x, player.y, player.width, player.height);
-
-    //enemy interaction and behavior + bullets functions
-    enemyBehavior();
-    if(player.vitality<=0){
-        gameOver=true;
-    }
-    if(gameOver){
-        console.log("game over");
-        alert("game Over")
-        player.y=platerY;
-        player.x=playerX;
-        enemy1Array = [];
-        enemy2Array = [];
-        enemy1Spawn=false;
-        gameOver=false;
-        hut.vitality=100;
-        player.vitality=100;
-        setTimeout(enemy1,10000);
-        return;
-        
-    }
-    
 }
 function movePlayer(e){
     if (e.key == "w" ) {
@@ -255,7 +261,7 @@ function enemy1(){
         width : 200,
         height : 170,
         damage : 10,
-        vitality : 500,
+        vitality : 1000,
         speed : -0.5
     }
     enemy1Array.push(enemy1);
