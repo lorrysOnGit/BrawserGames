@@ -2,6 +2,7 @@
 let boardWidth =  1280;
 let boardHeight = 720;
 let context;
+let ground = 620;
 
 //player
 let playerWidth=40;
@@ -21,8 +22,8 @@ let player = {
 //hut
 let hutWidth = 80;
 let hutHeight = 150;
-let hutX=600;
-let hutY=525;
+let hutX=boardWidth/2;
+let hutY=ground-hutHeight;
 let hutImg;
 
 let hut = {
@@ -36,6 +37,10 @@ let hut = {
 let enemy1Array = [];
 let enemy1Spawn=false;
 let elephantCanDealDamage=false;
+// enemy2 talpa
+let enemy2Array = [];
+let enemy2Count = 0;
+let talpaCanDealDamage=false;
 //projectile
 let upProjectileArray = [];
 let downProjectileArray = [];
@@ -68,7 +73,9 @@ window.onload = function() {
     context.fillRect(player.x, player.y, player.width, player.height);
     requestAnimationFrame(update);
     setTimeout(enemy1,10000); //wait time for the first elephant to spawn
+    setTimeout(enemy2,3000);
     setInterval(enemy1canDealDamage,1000);
+    setInterval(enemy2canDealDamage,250);
     document.addEventListener("keydown", movePlayer);
     document.addEventListener("keyup", jump);
     document.addEventListener("keyup",shoot);
@@ -82,8 +89,11 @@ function update() {
     //player movement & physics
     playerPhysics();   
 
-    //enemy interaction and behavior + bullets functions
+    //enemy interaction and behavior 
     enemyBehavior();
+
+    //bullets physics
+    bullets();
 
     if(player.vitality<=0){
         gameOver=true;
@@ -126,7 +136,7 @@ function playerPhysics(){
                 stops=false;
             }
     }
-    if (player.y==600){
+    if (player.y==ground-playerHeight){
         chargeDash=0;
         if(velocityX<0){
         velocityX += friction;
@@ -140,46 +150,46 @@ function playerPhysics(){
     }
     player.y += velocityY;
     player.x += velocityX;
-    player.y = Math.min(player.y + velocityY, 600);
+    player.y = Math.min(player.y + velocityY, ground-player.height);
     context.fillStyle = "green";
     context.fillRect(player.x, player.y, player.width, player.height);
 }
 function movePlayer(e){
     if (e.key == "w" ) {
-        if (player.y==600){
+        if (player.y==ground-playerHeight){
             //jump
             velocityY = -10;   
         }
     }
     if (e.key == "a"){
-        if(player.y==600){
+        if(player.y==ground-playerHeight){
             friction=0;
             velocityX = -7;
         }
     }
     if (e.key == "d"){
-        if(player.y==600){
+        if(player.y==ground-playerHeight){
             velocityX = 7;
             friction=0; 
         }
     }
     if (e.key == "s"){
         friction=0.4;
-        if(player.y<600){   
+        if(player.y<ground-playerHeight){   
             stops=true;     
         }
     }
 }
 function jump(e){
     if (e.key == "w" ) {
-        if (player.y==600){
+        if (player.y==ground-playerHeight){
             //jump
             velocityY = -10;
         }
     }
     if(e.key == "a"){
         friction=1;
-        if(player.y<600&&velocityX>-13){
+        if(player.y<ground-playerHeight&&velocityX>-13){
             chargeDash++;
             if(chargeDash==2){
                 velocityX = -13;
@@ -189,7 +199,7 @@ function jump(e){
     }
     if(e.key == "d"){
         friction=1;
-        if(player.y<600&&velocityX<13){
+        if(player.y<ground-playerHeight&&velocityX<13){
             chargeDash++;
            if(chargeDash==2){
             velocityX = 13;
@@ -201,10 +211,10 @@ function jump(e){
 function shoot(e){
     if (e.code=="ArrowUp"){
         let projectileUp={
-            x : player.x+playerWidth/2-2.5,
-            y : player.y+5,
-            width : 5,
-            height : 10
+            x : player.x+2,
+            y : player.y,
+            width : 36,
+            height : 36
         }
         upProjectileArray.push(projectileUp);
         upProjectiles=true;
@@ -212,10 +222,10 @@ function shoot(e){
     }
     if(e.code=="ArrowLeft"){
         let projectileLeft={
-            x : player.x,
+            x : player.x-playerWidth/2,
             y : player.y+playerHeight/3,
-            width : 10,
-            height :5 
+            width : 36,
+            height :36 
         }
         leftProjectileArray.push(projectileLeft);
         leftProjectiles=true;
@@ -226,8 +236,8 @@ function shoot(e){
         let projectileRight={
             x : player.x+playerWidth/2,
             y : player.y+playerHeight/3,
-            width : 10,
-            height : 5
+            width : 36,
+            height : 36
         }
         rightProjectileArray.push(projectileRight);
         rightProjectiles=true;
@@ -236,10 +246,10 @@ function shoot(e){
     }
     if(e.code=="ArrowDown"){
         let projectileDown={
-            x : player.x+playerWidth/2-5,
-            y : player.y+playerHeight-10,
-            width : 5,
-            height : 10
+            x : player.x+2,
+            y : player.y+playerHeight-20,
+            width : 36,
+            height : 36
         }
         downProjectileArray.push(projectileDown);
         downProjectiles=true;
@@ -257,7 +267,7 @@ function enemy1(){
     if(enemy1Spawn==false){
         let enemy1 ={
         x: boardWidth,
-        y: 520,
+        y: ground-170,
         width : 200,
         height : 170,
         damage : 10,
@@ -266,10 +276,40 @@ function enemy1(){
     }
     enemy1Array.push(enemy1);
     enemy1Spawn=true;
-    console.log("nemico");
+    console.log("elefante");
     }
     
     
+}
+function enemy2(){
+    if(enemy2Array.length==0){
+        enemy2Count=0;
+    }
+    if(enemy2Array.length<2){
+        let enemyX;
+        do{
+             enemyX = getRandomInt(9);
+        }
+        while(enemyX>3&&enemyX<6);
+        enemyX*=boardWidth/9;
+
+        let enemy ={
+            x : enemyX,
+            y : boardHeight-10,
+            width : 36,
+            height : 72,
+            damage : 5,
+            vitality : 20,
+            undergroundSpeed : 0.2,
+            speed : 1.5,
+            velocityY : 0
+        }
+        enemy2Array.push(enemy);
+        enemy2Count++;
+        console.log("talpa");
+        setTimeout(enemy2,1000);
+    }
+    else{setTimeout(enemy2,1000);}
 }
 function dealDamage(enemy){
     hut.vitality -= enemy.damage;
@@ -277,6 +317,9 @@ function dealDamage(enemy){
 }
 function enemy1canDealDamage(){
     elephantCanDealDamage=true;
+}
+function enemy2canDealDamage(){
+    talpaCanDealDamage=true;
 }
 function playerCollision(enemy){
     if(player.x<=enemy.x+player.width){
@@ -320,7 +363,24 @@ function enemyBehavior(){
                 deadOrAlive(1,enemy);
             }
         }
-        else{
+        if (enemy2Count>0){
+            for(let i=0; i<enemy2Array.length;i++){
+                let enemy = enemy2Array[i];
+                if(detectCollision(hut,enemy)){
+                    enemy.speed=0;
+                    if(talpaCanDealDamage==true){
+                        dealDamage(enemy);
+                        talpaCanDealDamage=false;
+                    }
+                }
+                if(detectCollision(player,enemy)){
+                    playerCollision(enemy); 
+                }
+                bulletsOnEnemy(enemy);
+                deadOrAlive(2,enemy);
+            }
+        }
+        if(!enemy2Count>0&&enemy1Spawn==false){
             let enemy = {
                 x: 0,
                 y: 0,
@@ -333,23 +393,68 @@ function enemyBehavior(){
     }
 function deadOrAlive(type,enemy){
     if(enemy.vitality>0){
-        enemy.x += enemy.speed;
-        context.fillStyle="red";
-        context.fillRect(enemy.x,enemy.y, enemy.width, enemy.height);   
+        switch (type) {
+            case 1:
+                enemy.x += enemy.speed;
+                context.fillStyle="red";
+                context.fillRect(enemy.x,enemy.y, enemy.width, enemy.height);
+                break;
+            case 2:
+                enemy.y-=enemy.velocityY;
+                if(enemy.y<ground-enemy.height){
+                    enemy.velocityY-=gravity;
+                    context.fillStyle="red";
+                    context.fillRect(enemy.x,enemy.y, enemy.width, enemy.height);
+                }
+                if(enemy.y<=ground-enemy.height){
+                    if(enemy.y>ground-enemy.height-1){
+                        enemy.y=ground-enemy.height;
+                        enemy.velocityY=0;
+                    }
+                    if(enemy.x>boardWidth/2){
+                        enemy.x -= enemy.speed;
+                    }
+                    else{enemy.x += enemy.speed;}
+                    
+                    context.fillStyle="red";
+                    context.fillRect(enemy.x,enemy.y, enemy.width, enemy.height);
+                    
+                }
+                if(enemy.y<ground-(enemy.height)/2+1&&enemy.y>ground-(enemy.height)/2){
+                        pop(enemy);
+                    }
+                if(enemy.y>ground-(enemy.height)/2){
+                    enemy.y -= enemy.undergroundSpeed;
+                    context.fillStyle="red";
+                    context.fillRect(enemy.x,enemy.y, enemy.width, enemy.height);
+                }
+                break;
+                
+                default:
+                    break;
+        }  
         }
     else{
-        context.clearRect(enemy.x,enemy.y,enemy.width,enemy.height);
-        enemy1Array.shift();
-        setTimeout(enemy1,10000);
         switch (type) {
             case 1:
                 enemy1Spawn=false;
+                enemy1Array.shift();
+                setTimeout(enemy1,10000);
+                break;
+            case 2:
+                enemy2Count--;
+                let position = enemy2Array.indexOf(enemy);
+                enemy2Array.splice(position, 1);
                 break;
         
             default:
                 break;
         }
     }
+}
+function pop(enemy){
+    enemy.y=ground-enemy.height;
+    enemy.velocityY=5;
 }
 function bulletCollision(enemy,projectile,dir){
       
@@ -398,10 +503,10 @@ function bulletBehavior(dir,enemy){
         case 1:
             for(let i=0; i<upProjectileArray.length;i++){
                 let projectile = upProjectileArray[i];
-                bulletPhysics(projectile,dir);
                 bulletCollision(enemy,projectile,dir);
                 //clear upProjectiles
                 while (upProjectileArray.length > 0 && upProjectileArray[0].y < 0) {
+                    console.log("projectile destroyed");
                     upProjectileArray.shift(); //removes the first element of the array
                 }
                 if(upProjectileArray[0]==null){
@@ -412,10 +517,10 @@ function bulletBehavior(dir,enemy){
         case 2:
             for(let i=0; i<downProjectileArray.length;i++){
                 let projectile = downProjectileArray[i];
-                bulletPhysics(projectile,dir);
                 bulletCollision(enemy,projectile,dir);
                 //clear downProjectiles
                 while (downProjectileArray.length > 0 && downProjectileArray[0].y > boardHeight) {
+                    console.log("projectile destroyed");
                     downProjectileArray.shift(); //removes the first element of the array
                 }
                 if(downProjectileArray[0]==null){
@@ -427,10 +532,10 @@ function bulletBehavior(dir,enemy){
             //leftProjectile movement & physics
             for(let i=0; i<leftProjectileArray.length;i++){
                 let projectile = leftProjectileArray[i];
-                bulletPhysics(projectile,dir);
                 bulletCollision(enemy,projectile,dir);
                 //clear leftProjectiles
                 while (leftProjectileArray.length > 0 && leftProjectileArray[0].x < 0) {
+                    console.log("projectile destroyed");
                     leftProjectileArray.shift(); //removes the first element of the array
                 }
                 if(leftProjectileArray[0]==null){
@@ -441,19 +546,51 @@ function bulletBehavior(dir,enemy){
         case 4 :
             for(let i=0; i<rightProjectileArray.length;i++){
                 let projectile = rightProjectileArray[i];
-                bulletPhysics(projectile,dir);
                 bulletCollision(enemy,projectile,dir);
                 //clear rightProjectiles
                 while (rightProjectileArray.length > 0 && rightProjectileArray[0].x > boardWidth) {
+                    console.log("projectile destroyed");
                     rightProjectileArray.shift(); //removes the first element of the array
                 }
                 if(rightProjectileArray[0]==null){
                     rightProjectiles=false;
+                    
                 }
             }
             break;
     }
 
+}
+function bullets (){
+    for(let i=0; i<4; i++){
+        switch (i){
+            case 0:
+                for(let i=0; i<upProjectileArray.length;i++){
+                let projectile = upProjectileArray[i];
+                bulletPhysics(projectile,1);
+            }
+                break;
+            case 1:
+                for(let i=0; i<downProjectileArray.length;i++){
+                let projectile = downProjectileArray[i];
+                bulletPhysics(projectile,2);
+            }
+                break;
+            case 2:
+                for(let i=0; i<leftProjectileArray.length;i++){
+                let projectile = leftProjectileArray[i];
+                bulletPhysics(projectile,3);
+            }
+                break;
+            case 3:
+                for(let i=0; i<rightProjectileArray.length;i++){
+                let projectile = rightProjectileArray[i];
+                bulletPhysics(projectile,4);
+            }
+                break;
+        }
+
+    }
 }
 function bulletPhysics(projectile,dir){
     switch (dir){
@@ -479,3 +616,6 @@ function bulletPhysics(projectile,dir){
             break;
     }
 }
+function getRandomInt(max) {
+    return Math.floor(Math.random() * max);
+  }
