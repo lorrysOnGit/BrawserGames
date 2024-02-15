@@ -8,7 +8,8 @@ gicoc platformer/non fatto
 last Defender 
 cose da fare :
 
-effetti knockback su nemici di piccola taglia: priorita
+effetti knockback su nemici di piccola taglia: fatto
+healt bar : priorita
 UI :non fatta 
 primo livello tutorial: non fatto
 livelli : non fatti

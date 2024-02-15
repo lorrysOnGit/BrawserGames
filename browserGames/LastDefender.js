@@ -157,6 +157,8 @@ function playerPhysics(){
     player.y += velocityY;
     player.x += velocityX;
     player.y = Math.min(player.y + velocityY, ground-player.height);
+    player.x = Math.min(player.x , boardWidth-player.width);
+    player.x = Math.max(player.x , 0);
     context.fillStyle = "green";
     context.fillRect(player.x, player.y, player.width, player.height);
 }
@@ -279,7 +281,8 @@ function enemy1(){
         damage : 10,
         vitality : 1000,
         speed : -0.5,
-        weight : 300
+        weight : 300,
+        healt : 1000
     }
     enemy1Array.push(enemy1);
     enemy1Spawn=true;
@@ -311,7 +314,8 @@ function enemy2(){
             speed : 1.5,
             velocityY : 0,
             pop : 5,
-            weight : 30
+            weight : 30,
+            healt : 60
         }
         enemy2Array.push(enemy);
         enemy2Count++;
@@ -392,12 +396,11 @@ function enemyBehavior(){
 }
 function deadOrAlive(type,enemy){
     if(enemy.vitality>0){
-        
+        context.fillStyle="red";
+        context.fillRect(enemy.x,enemy.y-40, enemy.width/100*getHealtPecentage(enemy), 20);
         switch (type) {
             case 1:
                 enemy.x += enemy.speed;
-                //context.fillStyle="red";
-                //context.fillRect(enemy.x,enemy.y, enemy.width, enemy.height);
                 context.drawImage(elephantWalk,eleWalkFrame,0,288,288,enemy.x-30,enemy.y-35,enemy.width+35,enemy.height+35);
                 break;
             case 2:
@@ -643,3 +646,6 @@ function bulletPhysics(projectile,dir){
 function getRandomInt(max) {
     return Math.floor(Math.random() * max);
   }
+function getHealtPecentage (enemy){
+    return enemy.vitality/enemy.healt*100;
+}
