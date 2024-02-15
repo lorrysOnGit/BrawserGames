@@ -6,7 +6,7 @@ let ground = 620;
 
 //player
 let playerWidth=40;
-let playerHeight=75;
+let playerHeight=80;
 let playerX=boardWidth/2;
 let platerY=0;
 let playerImg;
@@ -22,7 +22,7 @@ let player = {
 //hut
 let hutWidth = 80;
 let hutHeight = 150;
-let hutX=boardWidth/2;
+let hutX=boardWidth/2-hutWidth;
 let hutY=ground-hutHeight;
 let hutImg;
 
@@ -37,10 +37,15 @@ let hut = {
 let enemy1Array = [];
 let enemy1Spawn=false;
 let elephantCanDealDamage=false;
+const elephantWalk = new Image();
+elephantWalk.src = "./media/immagini/elefante.png";
+eleWalkFrame=0;
 // enemy2 talpa
 let enemy2Array = [];
 let enemy2Count = 0;
 let talpaCanDealDamage=false;
+// enemy3 snakeTrower
+
 //projectile
 let upProjectileArray = [];
 let downProjectileArray = [];
@@ -74,8 +79,9 @@ window.onload = function() {
     requestAnimationFrame(update);
     setTimeout(enemy1,10000); //wait time for the first elephant to spawn
     setTimeout(enemy2,3000);
+    setInterval(elephantGetFrame,120);
     setInterval(enemy1canDealDamage,1000);
-    setInterval(enemy2canDealDamage,250);
+    setInterval(enemy2canDealDamage,500);
     document.addEventListener("keydown", movePlayer);
     document.addEventListener("keyup", jump);
     document.addEventListener("keyup",shoot);
@@ -110,8 +116,8 @@ function update() {
         hut.vitality=100;
         player.vitality=100;
         setTimeout(enemy1,10000);
-        return;
-        
+        setTimeout(enemy2,1000);
+        return;  
     }
     
 }
@@ -300,9 +306,10 @@ function enemy2(){
             height : 72,
             damage : 5,
             vitality : 20,
-            undergroundSpeed : 0.2,
+            undergroundSpeed : 0.3,
             speed : 1.5,
-            velocityY : 0
+            velocityY : 0,
+            pop : 5
         }
         enemy2Array.push(enemy);
         enemy2Count++;
@@ -328,7 +335,7 @@ function playerCollision(enemy){
     else{
         velocityX = 7;
     } 
-    if(player.y!=600){
+    if(player.y!=ground){
         if(player.y+player.height<=enemy.y+10){
             console.log("stomp");
             enemy.vitality -=100;
@@ -345,59 +352,50 @@ function playerCollision(enemy){
     }
 }
 function enemyBehavior(){
-    //elephant behavior
-        if(enemy1Spawn==true){
-            for(let i=0; i<enemy1Array.length;i++){
-                let enemy = enemy1Array[i];
-                if(detectCollision(hut,enemy)){
-                    enemy.speed=0;
-                    if(elephantCanDealDamage==true){
-                        dealDamage(enemy);
-                        elephantCanDealDamage=false;
-                    }
+//elephant behavior
+    if(enemy1Spawn==true){
+        for(let i=0; i<enemy1Array.length;i++){
+            let enemy = enemy1Array[i];
+            if(detectCollision(hut,enemy)){
+                enemy.speed=0;
+                if(elephantCanDealDamage==true){
+                    dealDamage(enemy);
+                    elephantCanDealDamage=false;
                 }
-                if(detectCollision(player,enemy)){
-                    playerCollision(enemy); 
-                }
-                bulletsOnEnemy(enemy);
-                deadOrAlive(1,enemy);
             }
-        }
-        if (enemy2Count>0){
-            for(let i=0; i<enemy2Array.length;i++){
-                let enemy = enemy2Array[i];
-                if(detectCollision(hut,enemy)){
-                    enemy.speed=0;
-                    if(talpaCanDealDamage==true){
-                        dealDamage(enemy);
-                        talpaCanDealDamage=false;
-                    }
-                }
-                if(detectCollision(player,enemy)){
-                    playerCollision(enemy); 
-                }
-                bulletsOnEnemy(enemy);
-                deadOrAlive(2,enemy);
-            }
-        }
-        if(!enemy2Count>0&&enemy1Spawn==false){
-            let enemy = {
-                x: 0,
-                y: 0,
-                width : 0,
-                height : 0,
-                vitality : 0
+            if(detectCollision(player,enemy)){
+                playerCollision(enemy); 
             }
             bulletsOnEnemy(enemy);
+            deadOrAlive(1,enemy);
         }
     }
+    if (enemy2Count>0){
+        for(let i=0; i<enemy2Array.length;i++){
+            let enemy = enemy2Array[i];
+            if(detectCollision(hut,enemy)){
+                enemy.speed=0;
+                if(talpaCanDealDamage==true){
+                    dealDamage(enemy);
+                    talpaCanDealDamage=false;
+                }
+            }
+            if(detectCollision(player,enemy)){
+                playerCollision(enemy); 
+            }
+            bulletsOnEnemy(enemy);
+            deadOrAlive(2,enemy);
+        }
+    }
+}
 function deadOrAlive(type,enemy){
     if(enemy.vitality>0){
         switch (type) {
             case 1:
                 enemy.x += enemy.speed;
-                context.fillStyle="red";
-                context.fillRect(enemy.x,enemy.y, enemy.width, enemy.height);
+                //context.fillStyle="red";
+                //context.fillRect(enemy.x,enemy.y, enemy.width, enemy.height);
+                context.drawImage(elephantWalk,eleWalkFrame,0,288,288,enemy.x,enemy.y,enemy.width,enemy.height);
                 break;
             case 2:
                 enemy.y-=enemy.velocityY;
@@ -452,9 +450,17 @@ function deadOrAlive(type,enemy){
         }
     }
 }
+function elephantGetFrame(){
+if(eleWalkFrame!=1440-288){
+    eleWalkFrame+=288;
+}
+else{
+    eleWalkFrame=0;
+}
+}
 function pop(enemy){
     enemy.y=ground-enemy.height;
-    enemy.velocityY=5;
+    enemy.velocityY=enemy.pop;
 }
 function bulletCollision(enemy,projectile,dir){
       

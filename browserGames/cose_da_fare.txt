@@ -2,5 +2,15 @@ cose da fare nel gioco:
 
 flappy bird/fatto
 gioco a due giocatori sparatutto/non fatto
-gioco tower defence/non fatto
+gioco tower defence/work in progress
 gicoc platformer/non fatto
+
+last Defender 
+cose da fare :
+
+effetti knockback su nemici di piccola taglia: priorita
+UI :non fatta 
+selezione difficolta: non fatta
+IA di nemici : 2/3
+implementazione degli sprite : sprite ancora da realizzare
+tutorial : non fatto
