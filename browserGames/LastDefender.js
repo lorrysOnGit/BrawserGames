@@ -405,6 +405,9 @@ function deadOrAlive(type,enemy){
                 if (enemy.speed<1.5){
                     enemy.speed += 0.25;
                 }
+                if (enemy.speed > 1.5){
+                    enemy.speed -= 0.25;
+                }
                 if(enemy.y<ground-enemy.height){
                     enemy.velocityY-=gravity;
                     context.fillStyle="red";
@@ -473,6 +476,12 @@ function bulletCollision(enemy,projectile,dir){
     if(detectCollision(enemy,projectile)){
         if (enemy.weight<100){
             enemy.speed = -3;
+            if(player.x < enemy.x && enemy.x< hut.x){
+                enemy.speed = 3;
+            }
+            if(player.x > enemy.x && enemy.x > hut.x){
+                enemy.speed = 3;
+            }
         }
         switch (dir){
             case 1:
