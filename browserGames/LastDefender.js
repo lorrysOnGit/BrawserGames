@@ -278,7 +278,8 @@ function enemy1(){
         height : 170,
         damage : 10,
         vitality : 1000,
-        speed : -0.5
+        speed : -0.5,
+        weight : 300
     }
     enemy1Array.push(enemy1);
     enemy1Spawn=true;
@@ -305,11 +306,12 @@ function enemy2(){
             width : 36,
             height : 72,
             damage : 5,
-            vitality : 20,
+            vitality : 60,
             undergroundSpeed : 0.3,
             speed : 1.5,
             velocityY : 0,
-            pop : 5
+            pop : 5,
+            weight : 30
         }
         enemy2Array.push(enemy);
         enemy2Count++;
@@ -390,15 +392,19 @@ function enemyBehavior(){
 }
 function deadOrAlive(type,enemy){
     if(enemy.vitality>0){
+        
         switch (type) {
             case 1:
                 enemy.x += enemy.speed;
                 //context.fillStyle="red";
                 //context.fillRect(enemy.x,enemy.y, enemy.width, enemy.height);
-                context.drawImage(elephantWalk,eleWalkFrame,0,288,288,enemy.x,enemy.y,enemy.width,enemy.height);
+                context.drawImage(elephantWalk,eleWalkFrame,0,288,288,enemy.x-30,enemy.y-35,enemy.width+35,enemy.height+35);
                 break;
             case 2:
                 enemy.y-=enemy.velocityY;
+                if (enemy.speed<1.5){
+                    enemy.speed += 0.25;
+                }
                 if(enemy.y<ground-enemy.height){
                     enemy.velocityY-=gravity;
                     context.fillStyle="red";
@@ -465,6 +471,9 @@ function pop(enemy){
 function bulletCollision(enemy,projectile,dir){
       
     if(detectCollision(enemy,projectile)){
+        if (enemy.weight<100){
+            enemy.speed = -3;
+        }
         switch (dir){
             case 1:
                 upProjectileArray.shift();

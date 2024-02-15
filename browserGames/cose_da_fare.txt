@@ -10,7 +10,9 @@ cose da fare :
 
 effetti knockback su nemici di piccola taglia: priorita
 UI :non fatta 
-selezione difficolta: non fatta
+primo livello tutorial: non fatto
+livelli : non fatti
 IA di nemici : 2/3
-implementazione degli sprite : sprite ancora da realizzare
-tutorial : non fatto
+cronometro : non fatto 
+implementazione degli sprite : 0,5/4
+
