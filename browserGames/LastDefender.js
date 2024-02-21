@@ -31,7 +31,7 @@ let hut = {
     y : hutY,
     width : hutWidth,
     height : hutHeight,
-    vitality : 100
+    vitality : 100,
 }
 // enemy1 elephant
 let enemy1Array = [];
@@ -45,7 +45,9 @@ let enemy2Array = [];
 let enemy2Count = 0;
 let talpaCanDealDamage=false;
 // enemy3 snakeTrower
-
+let enemy3Array = [];
+let birbAlive= false;
+//enemy3.5 snake
 //projectile
 let upProjectileArray = [];
 let downProjectileArray = [];
@@ -64,6 +66,7 @@ let velocityX = 0;
 let gravity = 0.4;
 let friction = 1;
 let stops=false;
+let time = 0.00;
 
 let gameOver=false;
 
@@ -79,9 +82,11 @@ window.onload = function() {
     requestAnimationFrame(update);
     setTimeout(enemy1,10000); //wait time for the first elephant to spawn
     setTimeout(enemy2,3000);
+    setInterval(timer,10);
     setInterval(elephantGetFrame,120);
     setInterval(enemy1canDealDamage,1000);
     setInterval(enemy2canDealDamage,500);
+    enemy3();
     document.addEventListener("keydown", movePlayer);
     document.addEventListener("keyup", jump);
     document.addEventListener("keyup",shoot);
@@ -89,6 +94,11 @@ window.onload = function() {
 function update() {
     requestAnimationFrame(update);
     context.clearRect(0, 0, board.width, board.height);
+    //timer
+    context.fillStyle = "white";
+    context.font="60px impact";
+    context.fillText(parseFloat(time.toFixed(3)), 1080,60);
+
     //hut
     hutAnimations();
 
@@ -117,11 +127,14 @@ function update() {
         player.vitality=100;
         setTimeout(enemy1,10000);
         setTimeout(enemy2,1000);
+        time = 0.00;
         return;  
     }
     
 }
 function hutAnimations(){
+    context.fillStyle="red";
+    context.fillRect(hut.x,hut.y-40, hut.width/100*hut.vitality, 20);
     context.fillStyle = "yellow";
     context.fillRect(hut.x,hut.y,hut.width,hut.height);
     if(hut.vitality<=0){
@@ -129,6 +142,8 @@ function hutAnimations(){
     }
 }
 function playerPhysics(){
+    context.fillStyle="red";
+    context.fillRect(20,30,player.vitality*2, 20);
     velocityY += gravity;
     if (stops==true){
         if(velocityX<0){
@@ -324,6 +339,21 @@ function enemy2(){
     }
     else{setTimeout(enemy2,1000);}
 }
+function enemy3(){
+    let enemy = {
+        x : boardWidth,
+        y : 36,
+        height : 40,
+        width : 50,
+        vitality : 20,
+        speed : 3,
+        healt : 20
+    }
+    enemy3Array.push(enemy);
+    console.log("birb");
+    birbAlive=true;
+
+}
 function dealDamage(enemy){
     hut.vitality -= enemy.damage;
     console.log(hut.vitality);
@@ -393,6 +423,13 @@ function enemyBehavior(){
             deadOrAlive(2,enemy);
         }
     }
+    if (birbAlive==true){
+        for(let i=0; i<enemy3Array.length;i++){
+            let enemy = enemy3Array[i];
+            bulletsOnEnemy(enemy);
+            deadOrAlive(3,enemy);
+        }
+    }   
 }
 function deadOrAlive(type,enemy){
     if(enemy.vitality>0){
@@ -439,6 +476,15 @@ function deadOrAlive(type,enemy){
                     context.fillRect(enemy.x,enemy.y, enemy.width, enemy.height);
                 }
                 break;
+            case 3 : 
+                if(enemy.x<player.x){
+                    enemy.x += enemy.speed;
+                }
+                else if (enemy.x>player.x){
+                    enemy.x -= enemy.speed;                    
+                }
+                context.fillRect(enemy.x,enemy.y, enemy.width, enemy.height);
+                break;
                 
                 default:
                     break;
@@ -456,7 +502,11 @@ function deadOrAlive(type,enemy){
                 let position = enemy2Array.indexOf(enemy);
                 enemy2Array.splice(position, 1);
                 break;
-        
+            case 3:
+                birbAlive = false;
+                enemy3Array.shift();
+                setTimeout(enemy3,1000);
+                break;
             default:
                 break;
         }
@@ -648,4 +698,7 @@ function getRandomInt(max) {
   }
 function getHealtPecentage (enemy){
     return enemy.vitality/enemy.healt*100;
+}
+function timer(){
+    time += 0.01;
 }
