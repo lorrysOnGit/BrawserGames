@@ -17,7 +17,8 @@ let player = {
     y : platerY,
     width : playerWidth,
     height : playerHeight,
-    vitality : 100
+    vitality : 100,
+    speed: 7
 }
 //hut
 let hutWidth = 80;
@@ -46,8 +47,11 @@ let enemy2Count = 0;
 let talpaCanDealDamage=false;
 // enemy3 snakeTrower
 let enemy3Array = [];
-let birbAlive= false;
+let birbAlive = false;
 //enemy3.5 snake
+let enemy4Array = [];
+let snekCanSpawn = false;
+let snekCount=0;
 //projectile
 let upProjectileArray = [];
 let downProjectileArray = [];
@@ -84,6 +88,7 @@ window.onload = function() {
     setTimeout(enemy2,3000);
     setInterval(timer,10);
     setInterval(elephantGetFrame,120);
+    setInterval(snekSpawn,3000);
     setInterval(enemy1canDealDamage,1000);
     setInterval(enemy2canDealDamage,500);
     enemy3();
@@ -187,12 +192,12 @@ function movePlayer(e){
     if (e.key == "a"){
         if(player.y==ground-playerHeight){
             friction=0;
-            velocityX = -7;
+            velocityX = -player.speed;
         }
     }
     if (e.key == "d"){
         if(player.y==ground-playerHeight){
-            velocityX = 7;
+            velocityX = player.speed;
             friction=0; 
         }
     }
@@ -354,6 +359,26 @@ function enemy3(){
     birbAlive=true;
 
 }
+function enemy4(x,y){
+    if(enemy4Array.length==0){
+        snekCount=0;
+    }
+    if(enemy4Array.length<2){
+        let enemy = {
+            x : x,
+            y : y,
+            height : 40,
+            width : 50,
+            vitality : 60,
+            speed : 3,
+            healt : 60,
+            velocityY : 0,
+            weight : 30
+        }
+        enemy4Array.push(enemy);
+        console.log("snek");
+    }
+}
 function dealDamage(enemy){
     hut.vitality -= enemy.damage;
     console.log(hut.vitality);
@@ -363,6 +388,9 @@ function enemy1canDealDamage(){
 }
 function enemy2canDealDamage(){
     talpaCanDealDamage=true;
+}
+function snekSpawn(){
+    snekCanSpawn=true;
 }
 function playerCollision(enemy){
     if(player.x<=enemy.x+player.width){
@@ -428,8 +456,26 @@ function enemyBehavior(){
             let enemy = enemy3Array[i];
             bulletsOnEnemy(enemy);
             deadOrAlive(3,enemy);
+            if(snekCanSpawn){
+                enemy4(enemy.x,enemy.y);
+                snekCanSpawn=false;
+            }
         }
-    }   
+    }
+    if(enemy4Array.length>0){
+        for(let i=0; i<enemy4Array.length;i++){
+            let enemy = enemy4Array[i];
+            bulletsOnEnemy(enemy);
+            deadOrAlive(4,enemy);
+            if(detectCollision(player,enemy)){
+                player.speed=0;
+                enemy.speed=0;
+            }
+            else{
+                player.speed = 7;
+            }
+        }   
+    }
 }
 function deadOrAlive(type,enemy){
     if(enemy.vitality>0){
@@ -485,7 +531,19 @@ function deadOrAlive(type,enemy){
                 }
                 context.fillRect(enemy.x,enemy.y, enemy.width, enemy.height);
                 break;
-                
+            case 4 : 
+                if(enemy.y<=ground-enemy.height){
+                    enemy.velocityY += gravity/3;
+                    enemy.y += enemy.velocityY;
+                }
+                if(enemy.x<player.x){
+                    enemy.x += enemy.speed;
+                }
+                else if (enemy.x>player.x){
+                    enemy.x -= enemy.speed;                    
+                }
+                context.fillRect(enemy.x,enemy.y, enemy.width, enemy.height);
+                break;   
                 default:
                     break;
         }  
@@ -506,6 +564,11 @@ function deadOrAlive(type,enemy){
                 birbAlive = false;
                 enemy3Array.shift();
                 setTimeout(enemy3,1000);
+                break;
+            case 4 : 
+                let snekPosition = enemy4Array.indexOf(enemy);
+                enemy4Array.splice(snekPosition, 1);
+                player.speed=7;
                 break;
             default:
                 break;
