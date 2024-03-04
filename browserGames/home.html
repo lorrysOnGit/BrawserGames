@@ -1,28 +1,63 @@
-<html>
-    <head>
-        <title>browsergames</title>
-        <link rel="stylesheet" href="stile.css">
-        <script type="text/javascript" src="script.js"></script>
-    </head>
-    <body>
-        <h1 class="title">Brawser Games</h1>
-        
-            <div id="gameBox">
-                <h1 class="title">Flappy Bird</h1>  
-                <a href="flappyBird.html"><img src="./media/immagini/flappybird.png" class="selectionImage"></a>
-            </div>
-            <div id="gameBox">
-                <h1 class="title">Last Defender</h1>  
-                <a href="LastDefender.html"><img src="./media/immagini/monke.png" class="selectionImage"></a>
-            </div>
-            <div id="gameBox">
-                <h1 class="title">Scroll Down</h1>  
-                <a href=""><img src="./media/immagini/giocatore.jpg" class="selectionImage"></a>
-            </div>
-        
-        
-        
-        
-        
-    </body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="stile.css">
+<title>home</title>
+</head>
+<body>
+<h1 style="text-align: center;">BrawsersGames</h1>
+<div align="center" class="container">
+  <div class="carousel">
+    <div class="carousel-item">
+      <h2>flappyBird</h2>
+      <a href="../browserGames/flappyBird.html"><img src="../browserGames/media/immagini/Progetto senza titolo.png" alt="" height="400px" width="70%"></a>
+    </div>
+    <div class="carousel-item">
+      <h2>monke</h2>
+      <a href=""><img src="../browserGames/media/immagini/monke.png" alt="" height="400px" width="70%"></a>
+    </div>
+    <div class="carousel-item">
+      <h2>......</h2>
+      <a href=""><img src="../browserGames/media/immagini/giocatore.jpg" alt="" height="400px" width="60%"></a>
+    </div>
+  </div>
+  <div class="carousel-controls">
+    <button id="prevBtn">&lt;</button>
+    <button id="nextBtn">&gt;</button>
+  </div>
+</div>
+
+<script>
+  const carousel = document.querySelector('.carousel');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  let counter = 0;
+  const itemCount = document.querySelectorAll('.carousel-item').length;
+
+  nextBtn.addEventListener('click', () => {
+    counter++;
+    if (counter > itemCount - 1) {
+      counter = 0;
+    }
+    updateCarousel();
+  });
+
+  prevBtn.addEventListener('click', () => {
+    counter--;
+    if (counter < 0) {
+      counter = itemCount - 1;
+    }
+    updateCarousel();
+  });
+
+  function updateCarousel() {
+    const itemWidth = carousel.querySelector('.carousel-item').clientWidth;
+    carousel.style.transform = `translateX(${-itemWidth * counter}px)`;
+  }
+</script>
+
+
+</body>
 </html>
