@@ -20,7 +20,7 @@
 
   
 }
-.carousel-controls {
+#carousel-controls {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
@@ -29,10 +29,35 @@
   justify-content: space-between;
   
 }
-.carousel-controls button {
-  background: #333;
-  color: #fff;
-  border: none;
-  
+.nxtBtn button{  
+    block-size: auto;
+    width: 50px;
+    height: 50px;
+    background-color: rgba(240, 248, 255, 0);
+    background-image: url('./media/immagini/frecciaD.png') ;
+    background-repeat: no-repeat;
+    background-position: center;
+    transition-duration: 0.2s;
+    background-size: 100%;
+    background-color: rgb(0, 0, 0);
+    border-radius: 20%;
+    cursor: pointer;
+}
+.prvBtn button{  
+  block-size: auto;
+  width: 50px;
+  height: 50px;
+  background-color: rgba(240, 248, 255, 0);
+  background-image: url('./media/immagini/frecciaS.png') ;
+  background-repeat: no-repeat;
+  background-position: center;
+  transition-duration: 0.2s;
+  background-size: 100%;
+  background-color: rgb(0, 0, 0);
+  border-radius: 20%;
   cursor: pointer;
+}
+button:hover{
+  width: 55px;
+  height: 55px;
 }
