@@ -3,6 +3,7 @@ let boardWidth =  1280;
 let boardHeight = 720;
 let context;
 let ground = 620;
+let level =0;
 
 //player
 let playerWidth=40;
@@ -18,6 +19,7 @@ let player = {
     width : playerWidth,
     height : playerHeight,
     vitality : 100,
+    healt : 100,
     speed: 7
 }
 //hut
@@ -33,6 +35,7 @@ let hut = {
     width : hutWidth,
     height : hutHeight,
     vitality : 100,
+    healt : 100,
 }
 // enemy1 elephant
 let enemy1Array = [];
@@ -42,6 +45,7 @@ const elephantWalk = new Image();
 elephantWalk.src = "./media/immagini/elefante.png";
 eleWalkFrame=0;
 // enemy2 talpa
+let nTalpe=0;//maximum talpe that can spawn
 let enemy2Array = [];
 let enemy2Count = 0;
 let talpaCanDealDamage=false;
@@ -49,6 +53,7 @@ let talpaCanDealDamage=false;
 let enemy3Array = [];
 let birbAlive = false;
 //enemy3.5 snake
+let nSnek = 1; //maxumum snake that can spawn
 let enemy4Array = [];
 let snekCanSpawn = false;
 let snekCount=0;
@@ -83,15 +88,15 @@ window.onload = function() {
     //disegna giocatore
     context.fillStyle = "green";
     context.fillRect(player.x, player.y, player.width, player.height);
-    requestAnimationFrame(update);
-    setTimeout(enemy1,10000); //wait time for the first elephant to spawn
-    setTimeout(enemy2,3000);
     setInterval(timer,10);
+    requestAnimationFrame(update);
     setInterval(elephantGetFrame,120);
-    setInterval(snekSpawn,3000);
+    setTimeout(enemy1,1000); //wait time for the first elephant to spawn
+    setTimeout (enemy3(),30000);// wait time for the first birb to spawn
+    setInterval(snekSpawn,3000);// snek spawn rate
+    setTimeout(levelUp(),30000);//level up the difficulty
     setInterval(enemy1canDealDamage,1000);
     setInterval(enemy2canDealDamage,500);
-    enemy3();
     document.addEventListener("keydown", movePlayer);
     document.addEventListener("keyup", jump);
     document.addEventListener("keyup",shoot);
@@ -139,7 +144,7 @@ function update() {
 }
 function hutAnimations(){
     context.fillStyle="red";
-    context.fillRect(hut.x,hut.y-40, hut.width/100*hut.vitality, 20);
+    context.fillRect(hut.x,hut.y-40, hut.width/100*getHealtPecentage(hut), 20);
     context.fillStyle = "yellow";
     context.fillRect(hut.x,hut.y,hut.width,hut.height);
     if(hut.vitality<=0){
@@ -148,7 +153,7 @@ function hutAnimations(){
 }
 function playerPhysics(){
     context.fillStyle="red";
-    context.fillRect(20,30,player.vitality*2, 20);
+    context.fillRect(20,30,2*getHealtPecentage(player), 20);
     velocityY += gravity;
     if (stops==true){
         if(velocityX<0){
@@ -315,7 +320,7 @@ function enemy2(){
     if(enemy2Array.length==0){
         enemy2Count=0;
     }
-    if(enemy2Array.length<2){
+    if(enemy2Array.length<nTalpe){
         let enemyX;
         do{
              enemyX = getRandomInt(9);
@@ -363,7 +368,7 @@ function enemy4(x,y){
     if(enemy4Array.length==0){
         snekCount=0;
     }
-    if(enemy4Array.length<2){
+    if(enemy4Array.length<nSnek){
         let enemy = {
             x : x,
             y : y,
@@ -532,6 +537,9 @@ function deadOrAlive(type,enemy){
                 context.fillRect(enemy.x,enemy.y, enemy.width, enemy.height);
                 break;
             case 4 : 
+                if (enemy.speed<1.5){
+                    enemy.speed += 0.25;
+                }
                 if(enemy.y<=ground-enemy.height){
                     enemy.velocityY += gravity/3;
                     enemy.y += enemy.velocityY;
@@ -592,12 +600,12 @@ function bulletCollision(enemy,projectile,dir){
     if(detectCollision(enemy,projectile)){
         if (enemy.weight<100){
             enemy.speed = -3;
-            if(player.x < enemy.x && enemy.x< hut.x){
+            /*if(player.x < enemy.x && enemy.x< hut.x){
                 enemy.speed = 3;
             }
             if(player.x > enemy.x && enemy.x > hut.x){
                 enemy.speed = 3;
-            }
+            }*/
         }
         switch (dir){
             case 1:
@@ -764,4 +772,20 @@ function getHealtPecentage (enemy){
 }
 function timer(){
     time += 0.01;
+}
+function levelUp(){
+    level+=1;
+    alert("livello "+level);
+    nTalpe+=1;
+    nSnek+=1;
+    hut.vitality+=25;
+    if(hut.vitality>hut.healt){
+        hut.healt=hut.vitality;
+    }
+    player.vitality+=25;
+    if(player.vitality>player.healt){
+        player.healt=player.vitality;
+    }
+    setTimeout(enemy2,1000);
+    setTimeout(levelUp,30000);
 }
