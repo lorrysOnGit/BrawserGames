@@ -226,6 +226,9 @@ function movePlayer(e){
             stops=true;     
         }
     }
+    if(e.key == "p"){
+        alert("PAUSE");
+    }
 }
 function jump(e){
     if (e.key == "w" ) {
