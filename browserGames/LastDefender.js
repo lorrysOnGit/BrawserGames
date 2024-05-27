@@ -99,21 +99,16 @@ window.onload = function() {
     setInterval(enemy1canDealDamage,1000);
     setInterval(enemy2canDealDamage,500);
     document.addEventListener("keydown", movePlayer);
-    document.addEventListener("keyup", jump);
+    document.addEventListener("keyup", stopPlayer);
     document.addEventListener("keyup",shoot);
 }
 function update() {
     requestAnimationFrame(update);
     context.clearRect(0, 0, board.width, board.height);
-    //timer
-    context.fillStyle = "white";
-    context.font="60px impact";
-    context.fillText(parseFloat(time.toFixed(3)), 1080,60);
-
-    //score
-    context.fillStyle = "white";
-    context.font="60px impact";
-    context.fillText(parseFloat(score.toFixed(3)), 900,60);
+    
+    timer();
+    
+    viewScore();
 
     //hut
     hutAnimations();
@@ -156,6 +151,7 @@ function update() {
     }
     
 }
+//per ora non molto ma giusto per la barra degli hp
 function hutAnimations(){
     context.fillStyle="red";
     context.fillRect(hut.x,hut.y-40, hut.width/100*getHealtPecentage(hut), 20);
@@ -201,6 +197,7 @@ function playerPhysics(){
     context.fillStyle = "green";
     context.fillRect(player.x, player.y, player.width, player.height);
 }
+//quando il tasto viene premuto, il pesonaggio si muove.
 function movePlayer(e){
     if (e.key == "w" ) {
         if (player.y==ground-playerHeight){
@@ -220,6 +217,7 @@ function movePlayer(e){
             friction=0; 
         }
     }
+    //il tasto "s" di "stop" ferma il giocatore (anche in aria)
     if (e.key == "s"){
         friction=0.4;
         if(player.y<ground-playerHeight){   
@@ -230,7 +228,10 @@ function movePlayer(e){
         alert("PAUSE");
     }
 }
-function jump(e){
+//quando il tasto di muovimento viene rilasciato, quest'ultimo da un effentto "freno",
+// che fa si che il giocatore si fermi.
+//inoltre, questo freno rende il cambio di direzione meno instantaneo.
+function stopPlayer(e){
     if (e.key == "w" ) {
         if (player.y==ground-playerHeight){
             //jump
@@ -258,6 +259,7 @@ function jump(e){
         }
     }
 }
+//quando il pulsante viene rilasciato, viene sparato il proiettile nella direzione voluta.
 function shoot(e){
     if (e.code=="ArrowUp"){
         let projectileUp={
@@ -306,12 +308,14 @@ function shoot(e){
         velocityY = -2;
     }
 }
+//funzione per la hitbox
 function detectCollision(a, b) {
     return a.x < b.x + b.width &&   //a's top left corner doesn't reach b's top right corner
            a.x + a.width > b.x &&   //a's top right corner passes b's top left corner
            a.y < b.y + b.height &&  //a's top left corner doesn't reach b's bottom left corner
            a.y + a.height > b.y;    //a's bottom left corner passes b's top left corner
 }
+//generatore di nemco1 (elefante)
 function enemy1(){
     
     if(enemy1Spawn==false){
@@ -334,12 +338,15 @@ function enemy1(){
     
     
 }
+//generatore di nemico2 (talpe)
 function enemy2(){
     if(enemy2Array.length==0){
         enemy2Count=0;
     }
+    //vengono generate tante talpe quante il livello permette
     if(enemy2Array.length<nTalpe){
         let enemyX;
+        //le talpe vengono generate in posti randomici(ovviamente non sotto la dispensa)
         do{
              enemyX = getRandomInt(9);
         }
@@ -368,6 +375,7 @@ function enemy2(){
     }
     else{setTimeout(enemy2,1000);}
 }
+//generatore di nemico3 (l'aquila)
 function enemy3(){
     let enemy = {
         x : boardWidth,
@@ -384,6 +392,7 @@ function enemy3(){
     birbAlive=true;
 
 }
+//generatore di nemico4 (serpente)
 function enemy4(x,y){
     if(enemy4Array.length==0){
         snekCount=0;
@@ -405,19 +414,25 @@ function enemy4(x,y){
         console.log("snek");
     }
 }
+//funzione che permette al nemico di fare danno alla dispensa
 function dealDamage(enemy){
     hut.vitality -= enemy.damage;
     console.log(hut.vitality);
 }
+//attack speed dell'elefante
 function enemy1canDealDamage(){
     elephantCanDealDamage=true;
 }
+//attack speed della talpa
 function enemy2canDealDamage(){
     talpaCanDealDamage=true;
 }
+//una funziona che serve per fare in modo che non ci sia più di un serpente alla volta
 function snekSpawn(){
     snekCanSpawn=true;
 }
+//quando ci si scontra con un nemico e non è uno stomp
+//il protagonista ricevera del danno oltre a un knockback da quest'ultimo
 function playerCollision(enemy){
     if(player.x<=enemy.x+player.width){
         velocityX = -7;
@@ -608,6 +623,7 @@ function deadOrAlive(type,enemy){
         }
     }
 }
+//funzione per l'animazione dell'elefante
 function elephantGetFrame(){
 if(eleWalkFrame!=1440-288){
     eleWalkFrame+=288;
@@ -616,10 +632,71 @@ else{
     eleWalkFrame=0;
 }
 }
+//quando le talpe escono dal terreno, quest'ulme fanno un saltino 
 function pop(enemy){
     enemy.y=ground-enemy.height;
     enemy.velocityY=enemy.pop;
 }
+//funzione per i proiettili
+function bullets (){
+    //controlla per ogni direzione, quanti proiettili ci sono 
+    //e per ogni proiettile attiva la funziona "bulletPhisics"
+    for(let i=0; i<4; i++){
+        switch (i){
+            case 0:
+                for(let i=0; i<upProjectileArray.length;i++){
+                let projectile = upProjectileArray[i];
+                bulletPhysics(projectile,1);
+            }
+                break;
+            case 1:
+                for(let i=0; i<downProjectileArray.length;i++){
+                let projectile = downProjectileArray[i];
+                bulletPhysics(projectile,2);
+            }
+                break;
+            case 2:
+                for(let i=0; i<leftProjectileArray.length;i++){
+                let projectile = leftProjectileArray[i];
+                bulletPhysics(projectile,3);
+            }
+                break;
+            case 3:
+                for(let i=0; i<rightProjectileArray.length;i++){
+                let projectile = rightProjectileArray[i];
+                bulletPhysics(projectile,4);
+            }
+                break;
+        }
+
+    }
+}
+//disegna il proiettile e aggiorna la sua posizione
+function bulletPhysics(projectile,dir){
+    switch (dir){
+        case 1:
+            projectile.y -= projectileSpeed;
+            context.fillStyle="red";
+            context.fillRect(projectile.x,projectile.y, projectile.width, projectile.height);
+            break;
+        case 2:
+            projectile.y += projectileSpeed;
+            context.fillStyle="red";
+            context.fillRect(projectile.x,projectile.y, projectile.width, projectile.height);
+            break;
+        case 3:
+            projectile.x -= projectileSpeed;
+            context.fillStyle="red";
+            context.fillRect(projectile.x,projectile.y, projectile.width, projectile.height);
+            break; 
+        case 4:
+            projectile.x += projectileSpeed;
+            context.fillStyle="red";
+            context.fillRect(projectile.x,projectile.y, projectile.width, projectile.height);
+            break;
+    }
+}
+//quello che succede quando un proiettile colpisce un nemico
 function bulletCollision(enemy,projectile,dir){
       
     if(detectCollision(enemy,projectile)){
@@ -636,11 +713,9 @@ function bulletCollision(enemy,projectile,dir){
                 else{
                     enemy.speed = -3;
                 }
-            }
-            
-
-            
+            }    
         }
+        //distruzione del proiettile 
         switch (dir){
             case 1:
                 upProjectileArray.shift();
@@ -655,11 +730,13 @@ function bulletCollision(enemy,projectile,dir){
                 rightProjectileArray.shift();
                 break;
         }
+        //danno ricevuto dal nemico
         context.clearRect(projectile.x,projectile.y, projectile.width, projectile.height);
         enemy.vitality -=projectileDamamge;
     } 
-    
 }
+//per ogni direzione, attiva il bulletBehavior. 
+//così da lavorare con un vettore alla volta(per direzione).
 function bulletsOnEnemy(enemy){
     for(let i=0; i<4; i++){
         switch (i){
@@ -679,6 +756,9 @@ function bulletsOnEnemy(enemy){
 
     }
 }
+//lavora sul controllare tutti i processi che un proiettile compie
+//attraverso anche altre funzioni come bulletCollision;
+//tra questi c'è anche il sistema per eliminare i proietttile quando esce dalla mappa.
 function bulletBehavior(dir,enemy){
     
     switch (dir){
@@ -743,70 +823,21 @@ function bulletBehavior(dir,enemy){
     }
 
 }
-function bullets (){
-    for(let i=0; i<4; i++){
-        switch (i){
-            case 0:
-                for(let i=0; i<upProjectileArray.length;i++){
-                let projectile = upProjectileArray[i];
-                bulletPhysics(projectile,1);
-            }
-                break;
-            case 1:
-                for(let i=0; i<downProjectileArray.length;i++){
-                let projectile = downProjectileArray[i];
-                bulletPhysics(projectile,2);
-            }
-                break;
-            case 2:
-                for(let i=0; i<leftProjectileArray.length;i++){
-                let projectile = leftProjectileArray[i];
-                bulletPhysics(projectile,3);
-            }
-                break;
-            case 3:
-                for(let i=0; i<rightProjectileArray.length;i++){
-                let projectile = rightProjectileArray[i];
-                bulletPhysics(projectile,4);
-            }
-                break;
-        }
-
-    }
-}
-function bulletPhysics(projectile,dir){
-    switch (dir){
-        case 1:
-            projectile.y -= projectileSpeed;
-            context.fillStyle="red";
-            context.fillRect(projectile.x,projectile.y, projectile.width, projectile.height);
-            break;
-        case 2:
-            projectile.y += projectileSpeed;
-            context.fillStyle="red";
-            context.fillRect(projectile.x,projectile.y, projectile.width, projectile.height);
-            break;
-        case 3:
-            projectile.x -= projectileSpeed;
-            context.fillStyle="red";
-            context.fillRect(projectile.x,projectile.y, projectile.width, projectile.height);
-            break; 
-        case 4:
-            projectile.x += projectileSpeed;
-            context.fillStyle="red";
-            context.fillRect(projectile.x,projectile.y, projectile.width, projectile.height);
-            break;
-    }
-}
+//funzione per il random number
 function getRandomInt(max) {
     return Math.floor(Math.random() * max);
-  }
+}
+//funzione per avere la percentuale di hp
 function getHealtPecentage (enemy){
     return enemy.vitality/enemy.healt*100;
 }
 function timer(){
     time += 0.01;
+    context.fillStyle = "white";
+    context.font="60px impact";
+    context.fillText(parseFloat(time.toFixed(3)), 1080,60);
 }
+//funzione per l'aumento di livello
 function levelUp(){
     if(score>=levelScore){
         levelScore+=levelScore;
@@ -824,5 +855,10 @@ function levelUp(){
         }
         setTimeout(enemy2,1000);
     }
-    
+}
+//funzione per visualizzare il punteggio
+function viewScore(){
+    context.fillStyle = "white";
+    context.font="60px impact";
+    context.fillText(parseFloat(score.toFixed(3)), 900,60);
 }
