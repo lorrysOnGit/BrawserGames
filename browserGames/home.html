@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html>   
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -10,20 +10,20 @@
 <h1 style="text-align: center;">BrawsersGames</h1>
 <div align="center" class="container">
   <div class="carousel">
-    <div class="carousel-item">
+    <div class="carousel-item">     
       <h2>flappyBird</h2>
       <a href="../browserGames/flappyBird.html"><img src="../browserGames/media/immagini/Progetto senza titolo.png" alt="" height="400px" width="70%"></a>
     </div>
-    <div class="carousel-item">
+    <div class="carousel-item">    
       <h2>monke</h2>
       <a href="../browserGames/LastDefender.html"><img src="../browserGames/media/immagini/monke.png" alt="" height="400px" width="70%"></a>
     </div>
     <div class="carousel-item">
-      <h2>......</h2>
+      <h2>......</h2>      
       <a href=""><img src="../browserGames/media/immagini/giocatore.jpg" alt="" height="400px" width="60%"></a>
     </div>
   </div>
-  <div id="carousel-controls">
+  <div id="carousel-controls">   
     <div class="prvBtn"> <button  id="prevBtn"></button></div>
     <div class="nxtBtn"> <button  id="nextBtn"></button></div>
   </div>
@@ -37,7 +37,7 @@
   const itemCount = document.querySelectorAll('.carousel-item').length;
 
   nextBtn.addEventListener('click', () => {
-    counter++;
+    counter++;    
     if (counter > itemCount - 1) {
       counter = 0;
     }
