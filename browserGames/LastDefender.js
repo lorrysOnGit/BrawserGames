@@ -129,6 +129,7 @@ function update() {
         gameOver=true;
     }
     if(gameOver){
+        
         console.log("game over");
         alert("game Over");
         nTalpe=0;
@@ -842,7 +843,6 @@ function levelUp(){
     if(score>=levelScore){
         levelScore+=levelScore;
         level+=1;
-        alert("livello "+level);
         nTalpe+=1;
         nSnek+=1;
         hut.vitality+=25;
@@ -854,7 +854,17 @@ function levelUp(){
             player.healt=player.vitality;
         }
         setTimeout(enemy2,1000);
+        levelUpAnimation();
     }
+}
+function levelUpAnimation(){
+    
+    document.getElementById('levelUp').style.marginTop="150px ";
+    document.getElementById('levelUp').style.opacity=1;
+
+    setTimeout(nascondi,1500);
+    
+    
 }
 //funzione per visualizzare il punteggio
 function viewScore(){
@@ -862,3 +872,7 @@ function viewScore(){
     context.font="60px impact";
     context.fillText(parseFloat(score.toFixed(3)), 900,60);
 }
+function nascondi(){
+        document.getElementById('levelUp').style.opacity=0;
+        document.getElementById('levelUp').style.marginTop="200px";
+    }

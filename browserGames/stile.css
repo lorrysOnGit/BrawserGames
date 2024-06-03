@@ -61,3 +61,20 @@ button:hover{
   width: 55px;
   height: 55px;
 }
+.title{
+  color:white;
+  text-align: center;
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  font-size: 7pc;
+  text-shadow: 3px 3px 100px rgb(255, 255, 255);
+}
+body{
+  background-color: rgb(28, 81, 119);
+}
+.gameTitle{
+  color: white;
+  font-size: xx-large;
+  text-align: center;
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  text-shadow: 3px 3px 5px rgb(255, 255, 255,0.7);
+}
