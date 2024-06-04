@@ -13,7 +13,7 @@ and i myself the code of my new game: "Last Defender".
 Last Defender: 
 Last Defender is a tower defense game were a monkey have to protect his banana storage from wild animals that want to steal his food.
 
-the monkey is not just a monkey, his name is pit : pit the peanut shooter , with the arrow keys you can aim your shots, but remember to release to shoot; with the "a" key pit goes left, and with the "d" key he goes right; with the w key pit makes a jump ,and when he's in air if you tap 2 time the "d/a" key he is able to dash in that direction.
+the monkey is not just a monkey, his name is christian : christian the peanut shooter , with the arrow keys you can aim your shots, but remember to release to shoot; with the "a" key pit goes left, and with the "d" key he goes right; with the w key pit makes a jump ,and when he's in air if you tap 2 time the "d/a" key he is able to dash in that direction.
 also, by stomping the enemy, pit is able to do a lot of damage.
 
 tip: everytime you shoot you get a knockback effect and you can use it at your adventage(especially when shoting upwards).

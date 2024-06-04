@@ -8,6 +8,19 @@
         <div id="levelUp">
             <img src="./media/immagini/levelUp.png" alt="" height="200" width="300">
         </div>
+        <div id="position">
+            <div class="schermataGameOver" id="GameOver">
+                <div id="yourScore">
+                    <p class="score">your score: <p class="score" id="score">0</p></p>
+                </div>
+                <div id="topScore">
+                    <p class="score">personal best: <p class="score" id="bestScore">0</p></p>
+                </div>
+                <input type="button" id="commands" value="commands" class="commands" onclick="commands()">
+                <input type="button" id="retry" value="play" class="retry" onclick="retry()">
+                <input type="button" id="retunHome" value="home" class="returnHome" onclick="returnHome()">
+            </div>
+        </div>
         <canvas id="board"></canvas>
         
     </body>

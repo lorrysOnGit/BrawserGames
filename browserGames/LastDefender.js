@@ -11,9 +11,13 @@ let playerWidth=40;
 let playerHeight=80;
 let playerX=boardWidth/2;
 let platerY=0;
-let playerImg;
+let playerImg = new Image();
 let chargeDash=0;
 let score = 0;
+let topScore=0;
+let moveLeft=false;
+let moveRight=true;
+let playerFrame=0;
 
 let player = {
     x : playerX,
@@ -79,7 +83,7 @@ let friction = 1;
 let stops=false;
 let time = 0.00;
 
-let gameOver=false;
+let gameOver=true;             
 
 window.onload = function() {
     board = document.getElementById("board"); 
@@ -90,6 +94,7 @@ window.onload = function() {
     //disegna giocatore
     context.fillStyle = "green";
     context.fillRect(player.x, player.y, player.width, player.height);
+    setInterval(runAnimation,150);
     setInterval(timer,10);
     requestAnimationFrame(update);
     setInterval(elephantGetFrame,120);
@@ -103,9 +108,20 @@ window.onload = function() {
     document.addEventListener("keyup",shoot);
 }
 function update() {
+
     requestAnimationFrame(update);
     context.clearRect(0, 0, board.width, board.height);
     
+    if (gameOver) {
+        if(topScore<score){
+            topScore=score;
+        }
+        document.getElementById("bestScore").innerHTML = topScore;
+        document.getElementById('GameOver').style.display="block";
+        document.getElementById("score").innerHTML = score;
+        return;
+    }
+
     timer();
     
     viewScore();
@@ -128,28 +144,7 @@ function update() {
     if(player.vitality<=0){
         gameOver=true;
     }
-    if(gameOver){
-        
-        console.log("game over");
-        alert("game Over");
-        nTalpe=0;
-        nSnek=1;
-        level =0;
-        score=0;
-        levelScore=1000;
-        player.y=platerY;
-        player.x=playerX;
-        enemy1Array = [];
-        enemy2Array = [];
-        enemy1Spawn=false;
-        gameOver=false;
-        hut.vitality=100;
-        player.vitality=100;
-        setTimeout(enemy1,10000);
-        setTimeout(enemy2,1000);
-        time = 0.00;
-        return;  
-    }
+
     
 }
 //per ora non molto ma giusto per la barra degli hp
@@ -195,8 +190,70 @@ function playerPhysics(){
     player.y = Math.min(player.y + velocityY, ground-player.height);
     player.x = Math.min(player.x , boardWidth-player.width);
     player.x = Math.max(player.x , 0);
-    context.fillStyle = "green";
-    context.fillRect(player.x, player.y, player.width, player.height);
+    playerGraphics();
+    //context.fillStyle = "green";
+    //context.fillRect(player.x, player.y, player.width, player.height);
+}
+function playerGraphics(){
+    if(moveLeft){MoveLeft();}
+    else if(moveRight){MoveRight();}
+    
+}
+function MoveRight(){
+    
+    playerImg.src="./media/immagini/sprites/monkeSprites.png";
+    if(player.y<ground-200){
+        if(velocityY<0){
+            context.drawImage(playerImg,200,200,200,200,player.x-100,player.y-100,200,200);
+        }
+        else if(velocityY>0){
+            context.drawImage(playerImg,400,200,200,200,player.x-100,player.y-100,200,200);
+        }
+        playerFrame= 0;
+        return; 
+    }
+    else if(player.y>=ground-200&&velocityX ==0){
+        
+        context.drawImage(playerImg,600,200,200,200,player.x-100,player.y-100,200,200);
+        playerFrame= 0; 
+        return;
+    } 
+    if(velocityX!=0){
+        context.drawImage(playerImg,playerFrame,0,200,200,player.x-100,player.y-100,200,200);
+    }
+}
+function MoveLeft(){
+    playerImg.src="./media/immagini/sprites/monkeSprites2.png";
+    if(player.y<ground-200){
+        if(velocityY<0){
+            context.drawImage(playerImg,200,200,200,200,player.x-100,player.y-100,200,200);
+        }
+        else if(velocityY>0){
+            context.drawImage(playerImg,400,200,200,200,player.x-100,player.y-100,200,200);
+        }
+        playerFrame= 0;
+        return; 
+    }
+    else if(player.y>=ground-200&&velocityX ==0){
+        
+        context.drawImage(playerImg,600,200,200,200,player.x-100,player.y-100,200,200);
+        playerFrame= 0; 
+        return;
+    } 
+    if(velocityX!=0){
+        context.drawImage(playerImg,playerFrame,0,200,200,player.x-100,player.y-100,200,200);
+    }
+}
+
+function runAnimation(){
+    
+        if(playerFrame<600){
+        playerFrame+=200;
+        }
+        else{
+            playerFrame= 0; 
+        }
+        
 }
 //quando il tasto viene premuto, il pesonaggio si muove.
 function movePlayer(e){
@@ -210,12 +267,16 @@ function movePlayer(e){
         if(player.y==ground-playerHeight){
             friction=0;
             velocityX = -player.speed;
+            moveRight=false;
+            moveLeft=true;
         }
     }
     if (e.key == "d"){
         if(player.y==ground-playerHeight){
             velocityX = player.speed;
             friction=0; 
+            moveRight=true;
+            moveLeft=false;
         }
     }
     //il tasto "s" di "stop" ferma il giocatore (anche in aria)
@@ -858,13 +919,13 @@ function levelUp(){
     }
 }
 function levelUpAnimation(){
-    
     document.getElementById('levelUp').style.marginTop="150px ";
     document.getElementById('levelUp').style.opacity=1;
-
-    setTimeout(nascondi,1500);
-    
-    
+  setTimeout(nascondi,1500);
+  function nascondi(){
+        document.getElementById('levelUp').style.opacity=0;
+        document.getElementById('levelUp').style.marginTop="200px";
+    } 
 }
 //funzione per visualizzare il punteggio
 function viewScore(){
@@ -872,7 +933,28 @@ function viewScore(){
     context.font="60px impact";
     context.fillText(parseFloat(score.toFixed(3)), 900,60);
 }
-function nascondi(){
-        document.getElementById('levelUp').style.opacity=0;
-        document.getElementById('levelUp').style.marginTop="200px";
-    }
+function retry() {
+    document.getElementById('GameOver').style.display="none";
+    nTalpe=0;
+    nSnek=1;
+    level =0;
+    score=0;
+    levelScore=1000;
+    player.y=platerY;
+    player.x=playerX;
+    enemy1Array = [];
+    enemy2Array = [];
+    enemy1Spawn=false;
+    gameOver=false;
+    hut.vitality=100;
+    hut.healt=100;
+    player.vitality=100;
+    player.healt=100;
+    setTimeout(enemy1,10000);
+    setTimeout(enemy2,1000);
+    time = 0.00; 
+}
+function returnHome(){
+    window.location.href ='home.html';
+}
+
