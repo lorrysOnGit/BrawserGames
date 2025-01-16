@@ -289,6 +289,9 @@ function movePlayer(e){
     if(e.key == "p"){
         alert("PAUSE");
     }
+    if(e.key == "r"){
+        returnHome();
+    }
 }
 //quando il tasto di muovimento viene rilasciato, quest'ultimo da un effentto "freno",
 // che fa si che il giocatore si fermi.

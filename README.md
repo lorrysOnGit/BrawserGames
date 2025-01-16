@@ -26,6 +26,6 @@ the elephant is a chonky boy that will alway come in the right side of the map a
 the mole(talpes) come from under the ground and they do massive damage to the banana storage, they are not really fast in land and under the ground and they surely do not have massive hp(it takes 3 shots to kill and less than a stomp).
 the problem is that they are high in numers.
 
-the snake and the eagle is a totally different story, these two guy don't like bananas, thew want you and you only, the eagle will come for your head by launchin his friend snake in your face, and when the snake gets to you, it will stop you from mowing untill you kill it.
+ the snake and the eagle are a totally different story, these two guys don't like bananas, thew want you and you only, the eagle will come for your head by launchin his friend snake in your face, and when the snake gets to you, it will stop you from moving untill you kill it.
 
-you can puse the game by pressing the p key.
+you can pause the game by pressing the p key.
